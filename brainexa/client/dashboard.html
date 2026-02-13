@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Brainexa AI Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6c2bee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0a0712",
+                        "neutral-dark": "#161022",
+                        "glass": "rgba(255, 255, 255, 0.03)",
+                        "glass-border": "rgba(108, 43, 238, 0.2)"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .glassmorphism {
+            backdrop-filter: blur(16px);
+            background: rgba(22, 16, 34, 0.7);
+            border: 1px solid rgba(108, 43, 238, 0.15);
+        }
+
+        .sidebar-glass {
+            backdrop-filter: blur(20px);
+            background: rgba(10, 7, 18, 0.8);
+            border-right: 1px solid rgba(108, 43, 238, 0.1);
+        }
+
+        .chat-bubble-ai {
+            backdrop-filter: blur(12px);
+            background: rgba(47, 35, 72, 0.4);
+            border: 1px solid rgba(108, 43, 238, 0.2);
+        }
+
+        .chat-bubble-user {
+            background: rgba(108, 43, 238, 0.15);
+            border: 1px solid rgba(108, 43, 238, 0.3);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2f2348;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6c2bee;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #6c2bee 0%, #4a90e2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-200 h-screen overflow-hidden">
+    <div class="flex h-full w-full relative">
+        <!-- Mobile Sidebar Overlay -->
+        <div id="sidebarOverlay"
+            class="fixed inset-0 bg-black/60 z-30 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="sidebar-glass fixed inset-y-0 left-0 z-40 w-72 flex flex-col h-full transform -translate-x-full md:translate-x-0 md:relative transition-transform duration-300 ease-in-out">
+            <div class="p-6 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="size-10 rounded-xl bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center shadow-lg shadow-primary/20">
+                        <span class="material-symbols-outlined text-white text-2xl">neurology</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-white">Brainexa</h1>
+                        <p class="text-[10px] uppercase tracking-widest text-primary font-semibold">Neural Intelligence
+                        </p>
+                    </div>
+                </div>
+                <!-- Close Button (Mobile Only) -->
+                <button id="closeSidebarBtn" class="md:hidden text-slate-400 hover:text-white">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="px-4 mb-6">
+                <button id="newChatBtn"
+                    class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-blue-600 hover:opacity-90 transition-all text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-primary/25">
+                    <span class="material-symbols-outlined">add_circle</span>
+                    <span>New Chat</span>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 space-y-6">
+                <div>
+                    <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-2">Recent Chats
+                    </h3>
+                    <div id="recentChats" class="space-y-1">
+                        <!-- Recent chats will be populated here -->
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-2">History</h3>
+                    <div class="space-y-1">
+                        <button
+                            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-all group">
+                            <span class="material-symbols-outlined text-xl group-hover:text-primary">history</span>
+                            <span class="text-sm font-medium truncate">Last 7 Days</span>
+                        </button>
+                        <button
+                            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-all group">
+                            <span class="material-symbols-outlined text-xl group-hover:text-primary">settings</span>
+                            <span class="text-sm font-medium truncate">Settings</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Profile Section -->
+            <div class="p-4 border-t border-white/5">
+                <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 cursor-pointer transition-all">
+                    <div class="size-10 rounded-full bg-neutral-800 border border-primary/20 overflow-hidden shrink-0">
+                        <div class="w-full h-full flex items-center justify-center bg-primary text-white text-xl font-bold"
+                            id="userAvatar">U</div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="userName" class="text-sm font-bold text-white truncate">User</p>
+                        <p class="text-[11px] text-slate-500 truncate">Pro Member</p>
+                    </div>
+                    <button id="logoutBtn"
+                        class="text-slate-500 hover:text-white material-symbols-outlined">logout</button>
+                </div>
+            </div>
+        </aside>
+        <!-- Main Chat Area -->
+        <main
+            class="flex-1 flex flex-col relative bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-background-dark to-background-dark">
+            <!-- Header -->
+            <header
+                class="h-16 flex items-center justify-between px-4 md:px-8 border-b border-white/5 glassmorphism z-10">
+                <div class="flex items-center gap-3">
+                    <button id="mobileMenuBtn" class="md:hidden p-1 text-slate-400 hover:text-white transition-colors">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    <span class="material-symbols-outlined text-primary">auto_awesome</span>
+                    <h2 class="text-sm font-semibold text-white">AI Chat</h2>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="size-9 rounded-lg border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                        <span class="material-symbols-outlined text-xl">share</span>
+                    </button>
+                    <button
+                        class="size-9 rounded-lg border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                        <span class="material-symbols-outlined text-xl">download</span>
+                    </button>
+                </div>
+            </header>
+            <!-- Message Stream -->
+            <div id="chatContainer" class="flex-1 overflow-y-auto p-8 space-y-8">
+                <!-- Messages will be injected here -->
+                <div class="flex items-start gap-4 max-w-4xl">
+                    <div
+                        class="size-10 rounded-lg bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center shadow-lg shadow-primary/20 shrink-0 mt-1">
+                        <span class="material-symbols-outlined text-white text-xl">neurology</span>
+                    </div>
+                    <div class="space-y-2 flex-1">
+                        <p class="text-[11px] font-bold text-primary uppercase tracking-wider ml-1">Brainexa</p>
+                        <div
+                            class="chat-bubble-ai px-6 py-4 rounded-2xl rounded-tl-none text-slate-200 leading-relaxed shadow-xl">
+                            How can Brainexa help you today?
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Typing Indicator -->
+            <div id="typingIndicator" class="hidden px-8 py-2 flex items-center gap-2 text-slate-500 text-xs italic">
+                <div class="flex gap-1">
+                    <div class="size-1 bg-primary rounded-full animate-bounce"></div>
+                    <div class="size-1 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div class="size-1 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                </div>
+                <span>Brainexa is thinking...</span>
+            </div>
+            <!-- Image Preview -->
+            <div id="imagePreviewContainer" class="hidden px-8 pb-4">
+                <div class="relative inline-block group">
+                    <img id="imagePreview" src="" alt="Preview"
+                        class="h-24 w-auto rounded-xl border border-white/10 shadow-2xl">
+                    <button id="removeImageBtn" type="button"
+                        class="absolute -top-2 -right-2 bg-red-500 rounded-full p-1.5 text-white hover:bg-red-600 transition-colors shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="material-symbols-outlined text-[10px] font-bold">close</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Bar -->
+            <div class="p-8 pt-2">
+                <div class="max-w-4xl mx-auto relative group">
+                    <div
+                        class="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-blue-500/30 rounded-2xl blur opacity-30 group-focus-within:opacity-100 transition duration-500">
+                    </div>
+                    <form id="chatForm"
+                        class="relative flex items-end gap-2 bg-neutral-dark border border-white/10 rounded-2xl p-3 shadow-2xl">
+                        <input type="file" id="fileInput" accept="image/*" class="hidden">
+                        <button type="button" id="uploadBtn"
+                            class="size-10 flex items-center justify-center text-slate-400 hover:text-primary transition-colors hover:bg-white/5 rounded-xl">
+                            <span class="material-symbols-outlined">attach_file</span>
+                        </button>
+                        <textarea id="chatInput"
+                            class="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder-slate-500 py-2 resize-none max-h-40"
+                            placeholder="Ask Brainexa anything..." rows="1"></textarea>
+                        <div class="flex items-center gap-2 pb-0.5">
+                            <button type="button"
+                                class="size-10 flex items-center justify-center text-slate-400 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined">mic</span>
+                            </button>
+                            <button type="submit"
+                                class="size-10 bg-primary hover:bg-primary/80 text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/30 transition-all active:scale-95">
+                                <span class="material-symbols-outlined">send</span>
+                            </button>
+                        </div>
+                    </form>
+                    <p class="text-[10px] text-center text-slate-600 mt-3 font-medium uppercase tracking-widest">Powered
+                        by Brainexa 4.0 Neural Engine</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

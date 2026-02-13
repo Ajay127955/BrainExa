@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Brainexa - Think Beyond Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6c2bee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#161022",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .glass {
+            background: rgba(47, 35, 72, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(108, 43, 238, 0.2);
+        }
+        .hero-glow {
+            background: radial-gradient(circle at center, rgba(108, 43, 238, 0.15) 0%, transparent 70%);
+        }
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #6c2bee 0%, #3b82f6 100%);
+            filter: blur(120px);
+            opacity: 0.1;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 selection:bg-primary/30">
+<div class="relative min-h-screen overflow-x-hidden">
+<!-- Background Decorative Blobs -->
+<div class="blob top-[-10%] left-[-10%]"></div>
+<div class="blob bottom-[-10%] right-[-10%]"></div>
+<div class="layout-container flex flex-col">
+<!-- Navbar -->
+<header class="sticky top-0 z-50 glass border-b border-primary/10 px-6 py-4 md:px-20">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-2 group cursor-pointer">
+<div class="p-1.5 bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl">neurology</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight">Brainexa</h2>
+</div>
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Features</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">About</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="px-6 py-2 rounded-lg text-sm font-bold bg-primary text-white hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+                            Login
+                        </button>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<!-- Hero Section -->
+<section class="relative px-6 py-20 md:py-32 overflow-hidden">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="flex flex-col gap-8 text-left z-10">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 w-fit">
+<span class="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold text-primary uppercase tracking-widest">Next-Gen Intelligence</span>
+</div>
+<h1 class="text-5xl md:text-7xl font-bold leading-[1.1] tracking-tighter">
+                                Think Beyond <br/>
+<span class="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-400">Conversations</span>
+</h1>
+<p class="text-lg md:text-xl text-slate-400 max-w-lg leading-relaxed">
+                                Brainexa is your intelligent AI conversation partner, designed to understand context and evolve with your creative workflow.
+                            </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="px-8 py-4 bg-primary text-white font-bold rounded-xl flex items-center gap-2 hover:translate-y-[-2px] transition-all shadow-xl shadow-primary/30">
+                                    Start Chatting
+                                    <span class="material-symbols-outlined">bolt</span>
+</button>
+<button class="px-8 py-4 glass text-white font-bold rounded-xl border border-white/10 hover:bg-white/5 transition-all">
+                                    Explore Features
+                                </button>
+</div>
+</div>
+<!-- Hero Illustration/Interface Preview -->
+<div class="relative lg:h-[600px] flex items-center justify-center">
+<div class="absolute inset-0 hero-glow rounded-full"></div>
+<div class="glass relative z-10 w-full max-w-[500px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+<div class="h-10 border-b border-white/10 flex items-center px-4 gap-2">
+<div class="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
+<div class="ml-4 text-[10px] text-white/30 tracking-widest uppercase">Brainexa OS v2.0</div>
+</div>
+<div class="p-6 space-y-6">
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40 shrink-0">
+<span class="material-symbols-outlined text-primary text-sm">robot_2</span>
+</div>
+<div class="bg-white/5 rounded-2xl rounded-tl-none p-4 text-sm text-slate-300 border border-white/5">
+                                            How can I help you accelerate your workflow today?
+                                        </div>
+</div>
+<div class="flex flex-row-reverse gap-4">
+<div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-400/40 shrink-0">
+<span class="material-symbols-outlined text-blue-400 text-sm">person</span>
+</div>
+<div class="bg-primary/20 rounded-2xl rounded-tr-none p-4 text-sm text-slate-100 border border-primary/20">
+                                            Analyze my latest research project for key insights.
+                                        </div>
+</div>
+<div class="space-y-2 pt-4">
+<div class="h-2 bg-white/5 rounded-full w-3/4 animate-pulse"></div>
+<div class="h-2 bg-white/5 rounded-full w-1/2 animate-pulse"></div>
+</div>
+<div class="relative">
+<div class="h-12 bg-white/5 rounded-xl border border-white/10 flex items-center px-4">
+<span class="text-white/20 text-xs">Type your message...</span>
+<div class="ml-auto flex gap-2">
+<span class="material-symbols-outlined text-white/20 text-lg">mic</span>
+<span class="material-symbols-outlined text-primary text-lg">send</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Interface background decor -->
+<div class="absolute bottom-0 right-0 p-8 pointer-events-none">
+<img class="opacity-10 scale-150 rotate-12" data-alt="Abstract neural network connection pattern background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIU9zfk652SBAmR_QSd1DofNPmV3SC-Uu_Waqw2ThsLXLX1nVAp80WbhsH8mkeRutQ5OgsrQPvDzybnx1ITUp9pI3rjsYBdmffVtxvvw_5Jw8c6bOq7UMIjbPh9XNXHQZqygwtyPah9hwskCz9Se5faWWsWnqRGD4tI-FE2owHVkc6QK4H3vtKfJM21b6Ml-eDb_HwtT2iAfhQ35bjP8VT9zZSXCBK_NRpxbweqCNnWNXSL3vIPD-K3swe2sKbsBRItoi0FIabFiYF"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Section -->
+<section class="px-6 py-24 bg-background-dark/50 border-t border-primary/5">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-16 space-y-4">
+<h2 class="text-4xl font-bold">Experience the Future</h2>
+<p class="text-slate-400 max-w-2xl mx-auto">Cutting-edge technology designed for seamless interaction and unprecedented efficiency.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Feature 1 -->
+<div class="glass p-8 rounded-2xl group hover:border-primary/50 transition-all hover:translate-y-[-8px]">
+<div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl group-hover:text-white transition-colors">forum</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Smart Conversations</h3>
+<p class="text-slate-400 text-sm leading-relaxed">
+                                    Context-aware AI that learns from your personal style and remembers historical interactions for seamless continuity.
+                                </p>
+</div>
+<!-- Feature 2 -->
+<div class="glass p-8 rounded-2xl group hover:border-primary/50 transition-all hover:translate-y-[-8px]">
+<div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl group-hover:text-white transition-colors">encrypted</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Secure &amp; Private</h3>
+<p class="text-slate-400 text-sm leading-relaxed">
+                                    Enterprise-grade end-to-end encryption for every interaction. Your data stays yours, always protected and never shared.
+                                </p>
+</div>
+<!-- Feature 3 -->
+<div class="glass p-8 rounded-2xl group hover:border-primary/50 transition-all hover:translate-y-[-8px]">
+<div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl group-hover:text-white transition-colors">speed</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Fast Responses</h3>
+<p class="text-slate-400 text-sm leading-relaxed">
+                                    Low-latency processing powered by next-gen LLMs. Get instant answers and real-time complex data processing.
+                                </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Call to Action -->
+<section class="px-6 py-24 relative overflow-hidden">
+<div class="max-w-4xl mx-auto text-center glass p-12 md:p-20 rounded-[2.5rem] border border-primary/20 relative z-10">
+<h2 class="text-3xl md:text-5xl font-bold mb-6">Ready to transform <br/>your workflow?</h2>
+<p class="text-slate-400 text-lg mb-10">Join thousands of users already thinking beyond traditional chat.</p>
+<button class="px-12 py-4 bg-primary text-white font-bold rounded-xl text-lg hover:scale-105 transition-all shadow-2xl shadow-primary/40">
+                            Get Started Now
+                        </button>
+</div>
+<!-- CTA background element -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] bg-primary/5 blur-[120px] rounded-full"></div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="px-6 py-12 bg-background-dark border-t border-white/5">
+<div class="max-w-7xl mx-auto flex flex-col items-center gap-10">
+<div class="flex items-center gap-2">
+<div class="p-1 bg-primary/20 rounded text-primary">
+<span class="material-symbols-outlined text-xl">neurology</span>
+</div>
+<h2 class="text-lg font-bold tracking-tight">Brainexa</h2>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-8 text-sm text-slate-400 font-medium">
+<a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-white transition-colors" href="#">Security</a>
+<a class="hover:text-white transition-colors" href="#">Contact Us</a>
+<a class="hover:text-white transition-colors" href="#">API Docs</a>
+</div>
+<div class="flex items-center gap-6">
+<a class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-400 hover:text-primary transition-all" href="#">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path></svg>
+</a>
+<a class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-400 hover:text-primary transition-all" href="#">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+</a>
+<a class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-400 hover:text-primary transition-all" href="#">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+</a>
+</div>
+<div class="text-slate-500 text-xs tracking-widest uppercase">
+                        © 2024 Brainexa AI Technologies. All rights reserved.
+                    </div>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

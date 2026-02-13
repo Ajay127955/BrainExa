@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Brainexa Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6c2bee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#161022",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-item-active {
+            background: linear-gradient(90deg, rgba(108, 43, 238, 0.2) 0%, rgba(108, 43, 238, 0) 100%);
+            border-left: 3px solid #6c2bee;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(108, 43, 238, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside
+        class="w-64 flex-shrink-0 border-r border-white/5 bg-background-light dark:bg-background-dark/50 backdrop-blur-xl flex flex-col z-20">
+        <div class="p-6 flex items-center gap-3">
+            <div class="size-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-white text-2xl">neurology</span>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Brainexa</h1>
+                <p class="text-[10px] uppercase tracking-widest text-primary font-semibold">Chatbot OS</p>
+            </div>
+        </div>
+        <nav class="flex-1 mt-4 px-3 space-y-1">
+            <div class="px-3 mb-2">
+                <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Main Menu
+                </p>
+            </div>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary transition-all group"
+                href="#">
+                <span class="material-symbols-outlined transition-colors group-hover:text-primary">person</span>
+                <span class="text-sm font-medium">Users</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary transition-all group"
+                href="#">
+                <span class="material-symbols-outlined transition-colors group-hover:text-primary">forum</span>
+                <span class="text-sm font-medium">Conversations</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item-active text-primary transition-all group"
+                href="#">
+                <span class="material-symbols-outlined text-primary">analytics</span>
+                <span class="text-sm font-medium">Analytics</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary transition-all group"
+                href="#">
+                <span class="material-symbols-outlined transition-colors group-hover:text-primary">settings</span>
+                <span class="text-sm font-medium">Settings</span>
+            </a>
+        </nav>
+        <div class="p-4 mt-auto">
+            <div class="glass-card rounded-xl p-4 flex flex-col gap-3">
+                <p class="text-xs text-slate-400">System Health</p>
+                <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-primary h-full w-[94%]" data-alt="System health progress bar"></div>
+                </div>
+                <div class="flex justify-between items-center text-[10px] font-medium uppercase tracking-tighter">
+                    <span class="text-primary">Operational</span>
+                    <span class="text-slate-400">94% Capacity</span>
+                </div>
+            </div>
+            <button
+                class="w-full mt-4 flex items-center justify-center gap-2 bg-primary py-3 rounded-lg text-sm font-bold text-white shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+                <span class="material-symbols-outlined text-sm">help</span>
+                Support
+            </button>
+        </div>
+    </aside>
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+        <!-- Top Navbar -->
+        <header
+            class="h-16 flex items-center justify-between px-8 border-b border-white/5 bg-background-light dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-10">
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-slate-400">admin_panel_settings</span>
+                    <span class="text-sm font-bold tracking-tight">Admin Console</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button
+                    class="size-10 rounded-lg flex items-center justify-center bg-white/5 text-slate-400 hover:text-primary hover:bg-primary/10 transition-all relative">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span
+                        class="absolute top-2 right-2 size-2 bg-primary rounded-full ring-2 ring-background-dark"></span>
+                </button>
+                <div class="h-8 w-px bg-white/10 mx-1"></div>
+                <div class="flex items-center gap-3 pl-2">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold leading-none">Admin</p>
+                        <p class="text-[10px] text-slate-500">System Architect</p>
+                    </div>
+                    <div class="size-10 rounded-full border-2 border-primary/30 p-0.5">
+                        <div
+                            class="rounded-full size-full bg-primary flex items-center justify-center text-white font-bold">
+                            A</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Scrollable Dashboard Content -->
+        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+            <!-- Breadcrumbs / Title Row -->
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight">Analytics Overview</h2>
+                    <p class="text-slate-400 mt-1">Real-time performance metrics for Brainexa Engine</p>
+                </div>
+                <div class="flex gap-2">
+                    <button
+                        class="glass-card px-4 py-2 rounded-lg text-xs font-semibold hover:bg-white/10 transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">calendar_today</span>
+                        Last 30 Days
+                    </button>
+                    <button
+                        class="bg-primary px-4 py-2 rounded-lg text-xs font-bold text-white flex items-center gap-2 hover:opacity-90 transition-opacity">
+                        <span class="material-symbols-outlined text-sm">download</span>
+                        Export Data
+                    </button>
+                </div>
+            </div>
+            <!-- Stats Grid -->
+            <div id="statsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Stats will be populated here -->
+            </div>
+            <!-- Recent Activity Table -->
+            <div class="glass-card rounded-xl overflow-hidden">
+                <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/2">
+                    <h3 class="text-xl font-bold">Recent Users</h3>
+                    <button class="text-primary text-sm font-bold hover:underline">View All</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr
+                                class="text-[10px] uppercase tracking-widest text-slate-500 border-b border-white/5 bg-white/2">
+                                <th class="px-8 py-4 font-bold">Name</th>
+                                <th class="px-8 py-4 font-bold">Email</th>
+                                <th class="px-8 py-4 font-bold">Role</th>
+                                <th class="px-8 py-4 font-bold">Joined</th>
+                                <th class="px-8 py-4 font-bold text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody" class="divide-y divide-white/5">
+                            <!-- Users will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

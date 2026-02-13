@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Brainexa AI - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6c2bee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#161022",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .sidebar-item-active {
+            background: rgba(108, 43, 238, 0.15);
+            border-left: 3px solid #6c2bee;
+        }
+        .gradient-btn {
+            background: linear-gradient(135deg, #6c2bee 0%, #4a1bb3 100%);
+            box-shadow: 0 4px 15px rgba(108, 43, 238, 0.3);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #a78bfa, #6c2bee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-72 flex flex-col border-r border-white/5 bg-background-dark/50 backdrop-blur-xl h-screen sticky top-0">
+<div class="p-6 flex flex-col h-full">
+<!-- Logo -->
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-900 flex items-center justify-center">
+<span class="material-symbols-outlined text-white">psychology</span>
+</div>
+<div>
+<h1 class="text-lg font-bold tracking-tight">Brainexa AI</h1>
+<p class="text-xs text-primary/70 font-medium">v2.4.0 PRO</p>
+</div>
+</div>
+<!-- New Chat Action -->
+<button class="w-full flex items-center justify-center gap-2 py-3 mb-8 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group">
+<span class="material-symbols-outlined text-sm group-hover:rotate-90 transition-transform">add</span>
+<span class="text-sm font-semibold">New Chat</span>
+</button>
+<!-- Navigation -->
+<nav class="flex-1 space-y-1 overflow-y-auto">
+<p class="px-3 text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2">Platform</p>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">explore</span>
+<span class="text-sm font-medium">Discover</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="text-sm font-medium">History</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+<span class="text-sm font-medium">Library</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary border-r-2 border-primary" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<div class="pt-6">
+<p class="px-3 text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2">Recent Threads</p>
+<div class="space-y-1">
+<a class="block px-3 py-2 text-xs text-slate-500 hover:text-slate-300 truncate" href="#">Quantum computing basics...</a>
+<a class="block px-3 py-2 text-xs text-slate-500 hover:text-slate-300 truncate" href="#">UI/UX Design Trends 2024</a>
+<a class="block px-3 py-2 text-xs text-slate-500 hover:text-slate-300 truncate" href="#">Python API integration help</a>
+</div>
+</div>
+</nav>
+<!-- Bottom Profile -->
+<div class="mt-auto pt-6 border-t border-white/5">
+<div class="flex items-center gap-3 p-2 rounded-xl bg-white/5 border border-white/5">
+<img alt="Alex Rivers" class="w-10 h-10 rounded-lg object-cover" data-alt="Portrait of a male user with a friendly smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARubiSy7AcgRxZjRZrEtaIyIQkVs9lmiJkGd7t3iH_WOGJW_YE7VWdpOFYcTIO4nBJzalpjsbA4QjuYxKIHdGFTrWxk-DARkdelBBd1eURAn1w4cu7qxiaMfQmRCZxFf9FF3jTIEiclQ0YnMLLFDvyPDZ6HDVYOsSgwKAAT3NBAovGfGAQYBxuhaxfeJYt1XXrGNHfprgLtog27VAJj_bhGHVePr7knwF9jVfJnsiszT_q8-MpkRStdmGhHhS6yWvoQ8kHYVqaSoSD"/>
+<div class="flex-1 overflow-hidden">
+<p class="text-sm font-bold truncate">Alex Rivers</p>
+<p class="text-[10px] text-slate-500 truncate">alex.rivers@brainexa.ai</p>
+</div>
+<span class="material-symbols-outlined text-slate-500 cursor-pointer hover:text-white transition-colors">more_vert</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-y-auto bg-background-dark relative">
+<!-- Abstract Glows -->
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 -z-10"></div>
+<div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/10 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2 -z-10"></div>
+<div class="max-w-4xl mx-auto w-full px-8 py-12">
+<!-- Header -->
+<header class="mb-10">
+<h2 class="text-4xl font-bold tracking-tight mb-2">Settings</h2>
+<p class="text-slate-400">Manage your Brainexa account, security, and interface preferences.</p>
+</header>
+<!-- Tabs Navigation -->
+<div class="flex gap-1 p-1 mb-8 bg-white/5 rounded-xl border border-white/5 w-fit">
+<button class="px-6 py-2.5 rounded-lg text-sm font-semibold transition-all bg-primary text-white">Profile</button>
+<button class="px-6 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all">Appearance</button>
+<button class="px-6 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all">Security</button>
+<button class="px-6 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all">Notifications</button>
+</div>
+<!-- Settings Content -->
+<div class="space-y-8">
+<!-- Profile Section -->
+<section class="glass-panel rounded-2xl p-8">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">person</span>
+<h3 class="text-lg font-bold">Profile Details</h3>
+</div>
+<div class="flex flex-col md:flex-row gap-10">
+<div class="flex flex-col items-center gap-4">
+<div class="relative group">
+<img alt="Avatar Preview" class="w-32 h-32 rounded-full object-cover border-4 border-white/10 ring-2 ring-primary/20" data-alt="Close up portrait of a male user for profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDh36QdSF57_nzEDEwL4e5Y1g0DPzhyguitUXdgLz_XmtmUfIrz_SFQkPLg4DplN17nKtc6HT_UE3lc7XK8i6MJns7a4ukOmYSEIi2yDQrwSfdQpT3xUH-TL0GuHmn8LYZsXWIlpmf5sJd5fYj7oC3fUsqFwWtQCNwh5CCvE8wD6wEXI_a_Hf3mJjIHb8QkaniHISYaKR1TvDhoxguGvKBxROELahH-ASlqNng2XgbUs_mxwxjxZKQVrpIarOw7M74gi3sYxkd3nS4s"/>
+<div class="absolute inset-0 rounded-full bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined text-white">photo_camera</span>
+</div>
+</div>
+<button class="text-xs font-bold text-primary hover:text-primary/80 transition-colors uppercase tracking-wider">Change Photo</button>
+</div>
+<div class="flex-1 space-y-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-400">Display Name</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all" type="text" value="Alex Rivers"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-400">Professional Title</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all" placeholder="e.g. AI Researcher" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-400">Email Address</label>
+<div class="relative">
+<input class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-500 cursor-not-allowed outline-none" disabled="" type="email" value="alex.rivers@brainexa.ai"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-sm text-slate-500">lock</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Appearance Section -->
+<section class="glass-panel rounded-2xl p-8">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">palette</span>
+<h3 class="text-lg font-bold">Appearance</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+<div class="space-y-4">
+<label class="text-sm font-medium text-slate-400 block">Theme Mode</label>
+<div class="flex gap-4">
+<div class="flex-1 flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-primary bg-primary/5 cursor-pointer">
+<span class="material-symbols-outlined text-3xl">dark_mode</span>
+<span class="text-sm font-bold">Dark Mode</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 p-4 rounded-xl border border-white/5 hover:border-white/20 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-slate-500">light_mode</span>
+<span class="text-sm font-bold text-slate-500">Light Mode</span>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<label class="text-sm font-medium text-slate-400 block">Accent Color</label>
+<div class="flex flex-wrap gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-[#6c2bee] to-blue-600 cursor-pointer shadow-lg shadow-primary/20"></div>
+<div class="w-10 h-10 rounded-full bg-rose-500 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-10 h-10 rounded-full bg-emerald-500 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-10 h-10 rounded-full bg-amber-500 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-10 h-10 rounded-full bg-sky-500 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-sm">add</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Security Section -->
+<section class="glass-panel rounded-2xl p-8">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">security</span>
+<h3 class="text-lg font-bold">Security &amp; Privacy</h3>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between py-4 border-b border-white/5">
+<div>
+<h4 class="font-bold">Two-Factor Authentication (2FA)</h4>
+<p class="text-sm text-slate-400">Add an extra layer of security to your account.</p>
+</div>
+<button aria-checked="true" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none bg-primary" role="switch">
+<span aria-hidden="true" class="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-400">Current Password</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/50 outline-none" placeholder="••••••••••••" type="password"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-400">New Password</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/50 outline-none" placeholder="••••••••••••" type="password"/>
+</div>
+</div>
+<div class="flex justify-end">
+<button class="text-sm font-bold text-primary hover:underline">Change Password</button>
+</div>
+</div>
+</section>
+<!-- Save Footer -->
+<div class="flex items-center justify-between pt-4 pb-12">
+<div class="flex items-center gap-2 text-emerald-500">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+<p class="text-sm font-medium">All changes are auto-saved in draft mode.</p>
+</div>
+<div class="flex gap-4">
+<button class="px-8 py-3 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition-colors">Discard</button>
+<button class="gradient-btn px-10 py-3 rounded-xl text-sm font-bold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]">Save Changes</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
