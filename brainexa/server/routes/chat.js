@@ -39,108 +39,133 @@ router.post('/', protect, async (req, res) => {
         let apiProvider = '';
 
         try {
-            // Construct Messages History for API
-            const apiMessages = chat.messages.map(msg => {
-                if (msg.role === 'user' && msg.image) {
-                    return {
-                        role: 'user',
-                        content: [
-                            { type: 'text', text: msg.content },
-                            { type: 'image_url', image_url: { url: msg.image } }
-                        ]
-                    };
-                }
-                return { role: msg.role, content: msg.content };
-            });
+            // Image Generation Check (Pollinations.ai)
+            const imagePromptRegex = /(?:generate|create|draw|make) (?:an? )?(?:image|picture|photo) (?:of )?(.+)/i;
+            const imageMatch = message.match(imagePromptRegex);
 
-            // Add System Prompt
-            apiMessages.unshift({
-                role: 'system',
-                content: 'You are Brainexa, a helpful AI assistant. You can analyze images, draft emails, write code, and create content. If asked for code, PROVIDE THE ACTUAL CODE in markdown blocks.'
-            });
+            if (imageMatch && !image) { // Only if text prompt implies image gen and NO image is uploaded
+                const prompt = imageMatch[1];
+                const encodedPrompt = encodeURIComponent(prompt);
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
 
-            if (image && nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
-                // NVIDIA Vision (Neva)
-                apiProvider = 'NVIDIA Vision';
-                const response = await axios.post(
-                    'https://integrate.api.nvidia.com/v1/chat/completions',
-                    {
-                        model: 'nvidia/neva-22b',
-                        messages: apiMessages,
-                        temperature: 0.2,
-                        top_p: 0.7,
-                        max_tokens: 1024,
-                    },
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${nvidiaKey}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
-                );
-                aiResponse = response.data.choices[0].message.content;
-            } else if (image && groqApiKey) {
-                // Groq Vision (Llama 3.2)
-                apiProvider = 'Groq Vision';
-                const response = await axios.post(
-                    'https://api.groq.com/openai/v1/chat/completions',
-                    {
-                        model: 'llama-3.2-11b-vision-preview',
-                        messages: apiMessages,
-                        temperature: 0.2,
-                        max_tokens: 1024,
-                    },
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${groqApiKey}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
-                );
-                aiResponse = response.data.choices[0].message.content;
+                aiResponse = `Here is the image of **${prompt}** you requested:\n\n![${prompt}](${imageUrl})`;
 
-            } else if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
-                // Standard Text Chat (NVIDIA)
-                apiProvider = 'NVIDIA GLM';
-                const response = await axios.post(
-                    'https://integrate.api.nvidia.com/v1/chat/completions',
-                    {
-                        model: 'thudm/chatglm3-6b',
-                        messages: apiMessages, // Standard text messages
-                        temperature: 0.5,
-                        top_p: 1,
-                        max_tokens: 1024,
-                    },
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${nvidiaKey}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
-                );
-                aiResponse = response.data.choices[0].message.content;
-
-            } else if (groqApiKey) {
-                // Standard Text Chat (Groq)
-                apiProvider = 'Groq';
-                const response = await axios.post(
-                    'https://api.groq.com/openai/v1/chat/completions',
-                    {
-                        model: 'llama3-8b-8192',
-                        messages: apiMessages,
-                        temperature: 0.5,
-                    },
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${groqApiKey}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
-                );
-                aiResponse = response.data.choices[0].message.content;
+                // Skip LLM call
+                apiProvider = 'Pollinations.ai';
             } else {
-                aiResponse = "No valid API Configuration found for this request.";
-            }
+
+                // Construct Messages History for API
+                const apiMessages = chat.messages.map(msg => {
+                    if (msg.role === 'user' && msg.image) {
+                        return {
+                            role: 'user',
+                            content: [
+                                { type: 'text', text: msg.content },
+                                { type: 'image_url', image_url: { url: msg.image } }
+                            ]
+                        };
+                    }
+                    return { role: msg.role, content: msg.content };
+                });
+
+                // Add System Prompt
+                apiMessages.unshift({
+                    role: 'system',
+                    content: `You are Brainexa, a highly advanced AI assistant. 
+                
+                Your core expertise includes:
+                1. **Global Knowledge**: You have access to information about the world, history, geography, and cultures.
+                2. **Computer Science**: You are an expert in computers, programming, software development, and hardware.
+                3. **New Technologies**: You stay up-to-date with emerging tech like AI, Blockchain, Quantum Computing, and IoT.
+                4. **Mobile Technology**: You are knowledgeable about smartphones, mobile operating systems (iOS, Android), and mobile app development.
+                
+                Be helpful, accurate, and concise. formatting your responses with Markdown.
+                If asked to generate an image, you can't do it directly, but the system will handle it if the user starts their sentence with "generate an image of...".`
+                });
+
+                if (image && nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
+                    // NVIDIA Vision (Neva)
+                    apiProvider = 'NVIDIA Vision';
+                    const response = await axios.post(
+                        'https://integrate.api.nvidia.com/v1/chat/completions',
+                        {
+                            model: 'nvidia/neva-22b',
+                            messages: apiMessages,
+                            temperature: 0.2,
+                            top_p: 0.7,
+                            max_tokens: 1024,
+                        },
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${nvidiaKey}`,
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    );
+                    aiResponse = response.data.choices[0].message.content;
+                } else if (image && groqApiKey) {
+                    // Groq Vision (Llama 3.2)
+                    apiProvider = 'Groq Vision';
+                    const response = await axios.post(
+                        'https://api.groq.com/openai/v1/chat/completions',
+                        {
+                            model: 'llama-3.2-11b-vision-preview',
+                            messages: apiMessages,
+                            temperature: 0.2,
+                            max_tokens: 1024,
+                        },
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${groqApiKey}`,
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    );
+                    aiResponse = response.data.choices[0].message.content;
+
+                } else if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
+                    // Standard Text Chat (NVIDIA)
+                    apiProvider = 'NVIDIA GLM';
+                    const response = await axios.post(
+                        'https://integrate.api.nvidia.com/v1/chat/completions',
+                        {
+                            model: 'thudm/chatglm3-6b',
+                            messages: apiMessages, // Standard text messages
+                            temperature: 0.5,
+                            top_p: 1,
+                            max_tokens: 1024,
+                        },
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${nvidiaKey}`,
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    );
+                    aiResponse = response.data.choices[0].message.content;
+
+                } else if (groqApiKey) {
+                    // Standard Text Chat (Groq)
+                    apiProvider = 'Groq';
+                    const response = await axios.post(
+                        'https://api.groq.com/openai/v1/chat/completions',
+                        {
+                            model: 'llama3-8b-8192',
+                            messages: apiMessages,
+                            temperature: 0.5,
+                        },
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${groqApiKey}`,
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    );
+                    aiResponse = response.data.choices[0].message.content;
+                } else {
+                    aiResponse = "No valid API Configuration found for this request.";
+                }
+            } // End of Image Gen else block
 
         } catch (apiError) {
             console.error(`${apiProvider} API Error:`, apiError.response ? apiError.response.data : apiError.message);
