@@ -142,6 +142,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
+            const chatInput = document.getElementById('chatInput');
+            const chatForm = document.getElementById('chatForm');
+
+            // Enter to Send
+            if (chatInput && chatForm) {
+                chatInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        chatForm.requestSubmit();
+                    }
+                });
+            }
+
             if (chatForm) {
                 chatForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
