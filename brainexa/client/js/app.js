@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 // Utility: Get token
 const getToken = () => localStorage.getItem('token');
