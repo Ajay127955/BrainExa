@@ -266,6 +266,159 @@ if (sidebarOverlay) {
     sidebarOverlay.addEventListener('click', toggleSidebar);
 }
 
+// --- New Features Implementation ---
+const shareBtn = document.getElementById('shareBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const last7DaysBtn = document.getElementById('last7DaysBtn');
+const settingsBtn = document.getElementById('settingsBtn');
+
+// Toast Notification Helper
+function showToast(message) {
+    let toast = document.getElementById('toast-notification');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast-notification';
+        toast.className = 'fixed bottom-5 right-5 bg-primary text-white px-6 py-3 rounded-xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 font-medium flex items-center gap-2';
+        toast.innerHTML = '<span class="material-symbols-outlined">check_circle</span><span id="toast-msg"></span>';
+        document.body.appendChild(toast);
+    }
+    document.getElementById('toast-msg').textContent = message;
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+    }, 3000);
+}
+
+// Share Functionality
+if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+        const url = "https://brainexa.onrender.com";
+        navigator.clipboard.writeText(url).then(() => {
+            showToast(`Link copied: ${url}`);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            showToast('Failed to copy link.');
+        });
+    });
+}
+
+// Download PDF Functionality
+if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+        const element = document.getElementById('chatContainer');
+        // Clone to remove scrollbars for PDF
+        const clone = element.cloneNode(true);
+        clone.style.overflow = 'visible';
+        clone.style.height = 'auto';
+        clone.style.background = '#0a0712'; // Ensure dark background
+        clone.style.color = '#e2e8f0'; // Text color
+
+        const opt = {
+            margin: [10, 10],
+            filename: 'brainexa-chat-history.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0a0712' },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        showToast('Generating PDF...');
+        // We use a temporary container to render the full height content
+        const container = document.createElement('div');
+        container.style.width = '800px'; // Fixed width for A4 consistency
+        container.appendChild(clone);
+        document.body.appendChild(container);
+
+        html2pdf().set(opt).from(container).save().then(() => {
+            document.body.removeChild(container);
+            showToast('Chat history downloaded!');
+        });
+    });
+}
+
+// Last 7 Days Filter
+if (last7DaysBtn) {
+    last7DaysBtn.addEventListener('click', async () => {
+        showToast('Filtering: Last 7 Days');
+        // Fetch fresh history
+        try {
+            const res = await fetch(`${API_URL}/chat`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            const messages = await res.json();
+
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+            const filtered = messages.filter(msg => new Date(msg.timestamp) > sevenDaysAgo);
+
+            // Re-render
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.innerHTML = ''; // Clear current
+
+            if (filtered.length === 0) {
+                chatContainer.innerHTML = '<div class="text-center text-slate-500 mt-10">No chats in the last 7 days.</div>';
+            } else {
+                filtered.forEach(msg => {
+                    appendMessage(msg.role, msg.content, false, msg.image);
+                });
+            }
+
+        } catch (error) {
+            console.error(error);
+            showToast('Error filtering history');
+        }
+    });
+}
+
+// Settings Modal
+if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+        // Create modal dynamically
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in';
+        modal.innerHTML = `
+                <div class="bg-[#161022] border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl transform scale-100 transition-all">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-white">Settings</h3>
+                        <button id="closeSettings" class="text-slate-400 hover:text-white material-symbols-outlined">close</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-slate-400">delete</span>
+                                <span class="text-slate-200">Clear Chat History</span>
+                            </div>
+                            <button id="clearChatBtn" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors">
+                                Clear
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl">
+                             <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-slate-400">palette</span>
+                                <span class="text-slate-200">Theme</span>
+                            </div>
+                            <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Dark Mode</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-center text-xs text-slate-600 uppercase tracking-widest font-bold">
+                        Brainexa v1.0.2
+                    </div>
+                </div>
+            `;
+        document.body.appendChild(modal);
+
+        document.getElementById('closeSettings').addEventListener('click', () => modal.remove());
+
+        document.getElementById('clearChatBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to delete all chat history? This cannot be undone.')) {
+                // In a real app we would call DELETE /api/chat
+                showToast('Chat history cleared (Simulation)');
+                modal.remove();
+            }
+        });
+    });
+}
+
 function appendMessage(role, content, animate = false, image = null) {
     const chatContainer = document.getElementById('chatContainer');
     const div = document.createElement('div');
