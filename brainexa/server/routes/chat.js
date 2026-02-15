@@ -125,11 +125,11 @@ router.post('/', protect, async (req, res) => {
 
                 } else if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
                     // Standard Text Chat (NVIDIA)
-                    apiProvider = 'NVIDIA GLM';
+                    apiProvider = 'NVIDIA Llama 3.1';
                     const response = await axios.post(
                         'https://integrate.api.nvidia.com/v1/chat/completions',
                         {
-                            model: 'thudm/chatglm3-6b',
+                            model: 'meta/llama-3.1-70b-instruct',
                             messages: apiMessages, // Standard text messages
                             temperature: 0.5,
                             top_p: 1,
