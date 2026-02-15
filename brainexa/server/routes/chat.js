@@ -126,11 +126,22 @@ router.post('/', protect, async (req, res) => {
                 } else if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
                     // Standard Text Chat (NVIDIA)
                     apiProvider = 'NVIDIA Llama 3.1';
+
+                    // Sanitize messages for text-only model (remove image arrays)
+                    const textOnlyMessages = apiMessages.map(msg => {
+                        if (Array.isArray(msg.content)) {
+                            // Extract text from content array
+                            const textPart = msg.content.find(c => c.type === 'text');
+                            return { ...msg, content: textPart && textPart.text ? textPart.text : '(Image)' };
+                        }
+                        return msg;
+                    });
+
                     const response = await axios.post(
                         'https://integrate.api.nvidia.com/v1/chat/completions',
                         {
                             model: 'meta/llama-3.1-70b-instruct',
-                            messages: apiMessages, // Standard text messages
+                            messages: textOnlyMessages, // Use sanitized messages
                             temperature: 0.5,
                             top_p: 1,
                             max_tokens: 1024,
@@ -169,7 +180,8 @@ router.post('/', protect, async (req, res) => {
 
         } catch (apiError) {
             console.error(`${apiProvider} API Error:`, apiError.response ? apiError.response.data : apiError.message);
-            aiResponse = `Error processing request with ${apiProvider}.`;
+            const errorMessage = apiError.response?.data?.error?.message || apiError.message || 'Unknown error';
+            aiResponse = `Error processing request with ${apiProvider}: ${errorMessage}`;
         }
 
         // 3. Save AI Response
