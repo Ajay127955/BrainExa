@@ -83,7 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ name, email, password })
                     });
-                    const data = await res.json();
+
+                    let data;
+                    const contentType = res.headers.get("content-type");
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                        data = await res.json();
+                    } else {
+                        const text = await res.text();
+                        console.error('Non-JSON response:', text);
+                        throw new Error('Server returned non-JSON response');
+                    }
+
                     if (res.ok) {
                         alert('Registration successful! Please login.');
                         window.location.href = 'login.html';
@@ -91,8 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         alert(data.message || 'Registration failed');
                     }
                 } catch (err) {
-                    console.error(err);
-                    alert('An error occurred');
+                    console.error('Registration Error:', err);
+                    alert('An error occurred: ' + err.message);
                 }
             });
         }
