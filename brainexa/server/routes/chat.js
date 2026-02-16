@@ -1,38 +1,55 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const Chat = require('../models/Chat');
+const Conversation = require('../models/Conversation');
 const { protect } = require('../middleware/authMiddleware');
 
-// @desc    Send message to AI
+// Helper: Generate Title (Simple version, can be improved with AI)
+const generateTitle = (message) => {
+    return message.slice(0, 30) + (message.length > 30 ? '...' : '');
+};
+
+// @desc    Send message to AI (Create new or append to existing)
 // @route   POST /api/chat
 // @access  Private
 router.post('/', protect, async (req, res) => {
-    const { message, image } = req.body;
+    const { message, image, conversationId } = req.body;
 
     if (!message && !image) {
         return res.status(400).json({ message: 'Message or Image is required' });
     }
 
     try {
-        // 1. Save User Message
-        let chat = await Chat.findOne({ userId: req.user._id });
+        let conversation;
+        let isNewConversation = false;
 
-        if (!chat) {
-            chat = await Chat.create({
+        // 1. Find or Create Conversation
+        if (conversationId) {
+            conversation = await Conversation.findOne({ _id: conversationId, userId: req.user._id });
+            if (!conversation) {
+                return res.status(404).json({ message: 'Conversation not found' });
+            }
+        } else {
+            // Create new
+            conversation = await Conversation.create({
                 userId: req.user._id,
+                title: generateTitle(message || 'New Image Chat'),
                 messages: []
             });
+            isNewConversation = true;
         }
 
-        chat.messages.push({
+        // 2. Add User Message
+        const userMsg = {
             role: 'user',
             content: message || 'Image uploaded',
-            image: image || null
-        });
+            image: image || null,
+            timestamp: new Date()
+        };
+        conversation.messages.push(userMsg);
 
-        // 2. Call LLM API (Vision Support)
-        const nvidiaKey = process.env.NVIDIA_GLM_API_KEY || process.env.NVIDIA_KIMI_API_KEY; // Using any available NVIDIA Key
+        // 3. Call LLM API
+        const nvidiaKey = process.env.NVIDIA_GLM_API_KEY || process.env.NVIDIA_KIMI_API_KEY;
         const groqApiKey = process.env.GROQ_API_KEY;
 
         let aiResponse = "I'm sorry, I couldn't process that.";
@@ -41,21 +58,18 @@ router.post('/', protect, async (req, res) => {
         try {
             // Image Generation Check (Pollinations.ai)
             const imagePromptRegex = /(?:generate|create|draw|make) (?:an? )?(?:image|picture|photo) (?:of )?(.+)/i;
-            const imageMatch = message.match(imagePromptRegex);
+            const imageMatch = message && message.match(imagePromptRegex);
 
-            if (imageMatch && !image) { // Only if text prompt implies image gen and NO image is uploaded
+            if (imageMatch && !image) {
                 const prompt = imageMatch[1];
                 const encodedPrompt = encodeURIComponent(prompt);
                 const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
-
                 aiResponse = `Here is the image of **${prompt}** you requested:\n\n![${prompt}](${imageUrl})`;
-
-                // Skip LLM call
                 apiProvider = 'Pollinations.ai';
             } else {
-
-                // Construct Messages History for API
-                const apiMessages = chat.messages.map(msg => {
+                // Prepare messages for API (include history context if needed, but for now sending last few + system)
+                // NOTE: Sending full history might be too heavy. Let's send last 6 messages.
+                const recentMessages = conversation.messages.slice(-6).map(msg => {
                     if (msg.role === 'user' && msg.image) {
                         return {
                             role: 'user',
@@ -68,133 +82,84 @@ router.post('/', protect, async (req, res) => {
                     return { role: msg.role, content: msg.content };
                 });
 
-                // Add System Prompt
-                apiMessages.unshift({
+                // System Prompt
+                recentMessages.unshift({
                     role: 'system',
-                    content: `You are Brainexa, a highly advanced AI assistant. 
-                
-                Your core expertise includes:
-                1. **Global Knowledge**: You have access to information about the world, history, geography, and cultures.
-                2. **Computer Science**: You are an expert in computers, programming, software development, and hardware.
-                3. **New Technologies**: You stay up-to-date with emerging tech like AI, Blockchain, Quantum Computing, and IoT.
-                4. **Mobile Technology**: You are knowledgeable about smartphones, mobile operating systems (iOS, Android), and mobile app development.
-                
-                Be helpful, accurate, and concise. formatting your responses with Markdown.
-                If asked to generate an image, you can't do it directly, but the system will handle it if the user starts their sentence with "generate an image of...".`
+                    content: `You are Brainexa, a highly advanced AI assistant. Be helpful, accurate, and concise.`
                 });
 
+                // ... (API Calls similar to before, kept concise here for readability) ...
+                // Reuse existing logic for NVIDIA/Groq
                 if (image && nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
-                    // NVIDIA Vision (Neva)
                     apiProvider = 'NVIDIA Vision';
                     const response = await axios.post(
                         'https://integrate.api.nvidia.com/v1/chat/completions',
-                        {
-                            model: 'nvidia/neva-22b',
-                            messages: apiMessages,
-                            temperature: 0.2,
-                            top_p: 0.7,
-                            max_tokens: 1024,
-                        },
-                        {
-                            headers: {
-                                'Authorization': `Bearer ${nvidiaKey}`,
-                                'Content-Type': 'application/json'
-                            }
-                        }
+                        { model: 'nvidia/neva-22b', messages: recentMessages, temperature: 0.2, max_tokens: 1024 },
+                        { headers: { 'Authorization': `Bearer ${nvidiaKey}`, 'Content-Type': 'application/json' } }
                     );
                     aiResponse = response.data.choices[0].message.content;
                 } else if (image && groqApiKey) {
-                    // Groq Vision (Llama 3.2)
                     apiProvider = 'Groq Vision';
                     const response = await axios.post(
                         'https://api.groq.com/openai/v1/chat/completions',
-                        {
-                            model: 'llama-3.2-11b-vision-preview',
-                            messages: apiMessages,
-                            temperature: 0.2,
-                            max_tokens: 1024,
-                        },
-                        {
-                            headers: {
-                                'Authorization': `Bearer ${groqApiKey}`,
-                                'Content-Type': 'application/json'
-                            }
-                        }
+                        { model: 'llama-3.2-11b-vision-preview', messages: recentMessages, temperature: 0.2, max_tokens: 1024 },
+                        { headers: { 'Authorization': `Bearer ${groqApiKey}`, 'Content-Type': 'application/json' } }
                     );
                     aiResponse = response.data.choices[0].message.content;
-
                 } else if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
-                    // Standard Text Chat (NVIDIA)
                     apiProvider = 'NVIDIA Llama 3.1';
-
-                    // Sanitize messages for text-only model (remove image arrays)
-                    const textOnlyMessages = apiMessages.map(msg => {
+                    // Sanitize
+                    const textOnlyMessages = recentMessages.map(msg => {
                         if (Array.isArray(msg.content)) {
-                            // Extract text from content array
                             const textPart = msg.content.find(c => c.type === 'text');
-                            return { ...msg, content: textPart && textPart.text ? textPart.text : '(Image)' };
+                            return { ...msg, content: textPart ? textPart.text : '(Image)' };
                         }
                         return msg;
                     });
-
                     const response = await axios.post(
                         'https://integrate.api.nvidia.com/v1/chat/completions',
-                        {
-                            model: 'meta/llama-3.1-70b-instruct',
-                            messages: textOnlyMessages, // Use sanitized messages
-                            temperature: 0.5,
-                            top_p: 1,
-                            max_tokens: 1024,
-                        },
-                        {
-                            headers: {
-                                'Authorization': `Bearer ${nvidiaKey}`,
-                                'Content-Type': 'application/json'
-                            }
-                        }
+                        { model: 'meta/llama-3.1-70b-instruct', messages: textOnlyMessages, temperature: 0.5, max_tokens: 1024 },
+                        { headers: { 'Authorization': `Bearer ${nvidiaKey}`, 'Content-Type': 'application/json' } }
                     );
                     aiResponse = response.data.choices[0].message.content;
-
                 } else if (groqApiKey) {
-                    // Standard Text Chat (Groq)
                     apiProvider = 'Groq';
                     const response = await axios.post(
                         'https://api.groq.com/openai/v1/chat/completions',
-                        {
-                            model: 'llama3-8b-8192',
-                            messages: apiMessages,
-                            temperature: 0.5,
-                        },
-                        {
-                            headers: {
-                                'Authorization': `Bearer ${groqApiKey}`,
-                                'Content-Type': 'application/json'
-                            }
-                        }
+                        { model: 'llama3-8b-8192', messages: recentMessages, temperature: 0.5 },
+                        { headers: { 'Authorization': `Bearer ${groqApiKey}`, 'Content-Type': 'application/json' } }
                     );
                     aiResponse = response.data.choices[0].message.content;
                 } else {
-                    aiResponse = "No valid API Configuration found for this request.";
+                    aiResponse = "No valid API Configuration found.";
                 }
-            } // End of Image Gen else block
+            }
 
         } catch (apiError) {
-            console.error(`${apiProvider} API Error:`, apiError.response ? apiError.response.data : apiError.message);
-            const errorMessage = apiError.response?.data?.error?.message || apiError.message || 'Unknown error';
-            aiResponse = `Error processing request with ${apiProvider}: ${errorMessage}`;
+            console.error('API Error:', apiError.message);
+            aiResponse = `Error: ${apiError.message}`;
         }
 
-        // 3. Save AI Response
-        chat.messages.push({
+        // 4. Save AI Response
+        conversation.messages.push({
             role: 'assistant',
-            content: aiResponse
+            content: aiResponse,
+            timestamp: new Date()
         });
 
-        await chat.save();
+        // Update Title if it's the very first message and it was just "New Chat"
+        if (isNewConversation && conversation.messages.length <= 2) {
+            // In a real app, we'd ask the AI to generate a title.
+            // For now, keep the simple one generated above.
+        }
+
+        await conversation.save();
 
         res.json({
+            conversationId: conversation._id,
+            title: conversation.title,
             response: aiResponse,
-            history: chat.messages
+            history: conversation.messages
         });
 
     } catch (error) {
@@ -203,15 +168,54 @@ router.post('/', protect, async (req, res) => {
     }
 });
 
-// @desc    Get chat history
-// @route   GET /api/chat
+// @desc    Get all conversations (for sidebar)
+// @route   GET /api/chat/list
 // @access  Private
-router.get('/', protect, async (req, res) => {
+router.get('/list', protect, async (req, res) => {
     try {
-        const chat = await Chat.findOne({ userId: req.user._id });
-        res.json(chat ? chat.messages : []);
+        const conversations = await Conversation.find({ userId: req.user._id })
+            .select('title createdAt updatedAt')
+            .sort({ updatedAt: -1 });
+        res.json(conversations);
     } catch (error) {
-        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+// @desc    Get specific conversation history
+// @route   GET /api/chat/:id
+// @access  Private
+router.get('/:id', protect, async (req, res) => {
+    try {
+        const conversation = await Conversation.findOne({ _id: req.params.id, userId: req.user._id });
+        if (!conversation) return res.status(404).json({ message: 'Conversation not found' });
+        res.json(conversation);
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+// @desc    Delete specific conversation
+// @route   DELETE /api/chat/:id
+// @access  Private
+router.delete('/:id', protect, async (req, res) => {
+    try {
+        const conversation = await Conversation.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
+        if (!conversation) return res.status(404).json({ message: 'Conversation not found' });
+        res.json({ message: 'Conversation deleted' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+// @desc    Delete ALL conversations
+// @route   DELETE /api/chat
+// @access  Private
+router.delete('/', protect, async (req, res) => {
+    try {
+        await Conversation.deleteMany({ userId: req.user._id });
+        res.json({ message: 'All history deleted' });
+    } catch (error) {
         res.status(500).json({ message: 'Server Error' });
     }
 });
