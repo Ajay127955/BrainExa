@@ -163,7 +163,6 @@ router.post('/', protect, async (req, res) => {
         });
 
     } catch (error) {
-    } catch (error) {
         console.error('Chat Route Error:', error);
         res.status(500).json({ message: 'Server Error: ' + error.message });
     }
