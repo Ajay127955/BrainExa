@@ -377,7 +377,7 @@ function setupChatInput(auth) {
                 document.getElementById('typingIndicator').classList.add('hidden');
 
                 if (res.ok) {
-                    appendMessage('assistant', data.response, true);
+                    await appendMessage('assistant', data.response, true);
 
                     // If this was a new chat, update ID and refresh list
                     if (!currentConversationId && data.conversationId) {
@@ -421,57 +421,61 @@ function toggleSendButton(isGenerating) {
 }
 
 function appendMessage(role, content, animate = false, image = null) {
-    const chatContainer = document.getElementById('chatContainer');
-    const welcomeMsg = document.getElementById('welcomeMessage');
-    if (welcomeMsg) welcomeMsg.remove(); // Remove welcome message on first message
+    return new Promise((resolve) => {
+        const chatContainer = document.getElementById('chatContainer');
+        const welcomeMsg = document.getElementById('welcomeMessage');
+        if (welcomeMsg) welcomeMsg.remove(); // Remove welcome message on first message
 
-    const div = document.createElement('div');
-    div.className = role === 'user' ? 'flex items-start gap-3 max-w-xl ml-auto flex-row-reverse' : 'flex items-start gap-3 max-w-xl';
+        const div = document.createElement('div');
+        div.className = role === 'user' ? 'flex items-start gap-3 max-w-xl ml-auto flex-row-reverse' : 'flex items-start gap-3 max-w-xl';
 
-    const avatar = role === 'user'
-        ? `<div class="size-8 rounded-lg bg-neutral-800 border border-white/10 overflow-hidden shrink-0 mt-1 flex items-center justify-center text-white font-bold text-xs">U</div>`
-        : `<div class="size-8 rounded-lg bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center shadow-lg shadow-primary/20 shrink-0 mt-1"><span class="material-symbols-outlined text-white text-base">neurology</span></div>`;
+        const avatar = role === 'user'
+            ? `<div class="size-8 rounded-lg bg-neutral-800 border border-white/10 overflow-hidden shrink-0 mt-1 flex items-center justify-center text-white font-bold text-xs">U</div>`
+            : `<div class="size-8 rounded-lg bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center shadow-lg shadow-primary/20 shrink-0 mt-1"><span class="material-symbols-outlined text-white text-base">neurology</span></div>`;
 
-    const bubbleClass = role === 'user' ? 'chat-bubble-user rounded-tr-none text-white whitespace-pre-wrap' : 'chat-bubble-ai rounded-tl-none text-slate-200 whitespace-pre-wrap';
-    const name = role === 'user' ? 'You' : 'Brainexa';
-    const align = role === 'user' ? 'text-right' : '';
-    const margin = role === 'user' ? 'mr-1' : 'ml-1';
+        const bubbleClass = role === 'user' ? 'chat-bubble-user rounded-tr-none text-white whitespace-pre-wrap' : 'chat-bubble-ai rounded-tl-none text-slate-200 whitespace-pre-wrap';
+        const name = role === 'user' ? 'You' : 'Brainexa';
+        const align = role === 'user' ? 'text-right' : '';
+        const margin = role === 'user' ? 'mr-1' : 'ml-1';
 
-    let imageHTML = '';
-    if (image) {
-        imageHTML = `<img src="${image}" class="rounded-lg max-w-full h-auto mb-2 border border-white/10">`;
-    }
+        let imageHTML = '';
+        if (image) {
+            imageHTML = `<img src="${image}" class="rounded-lg max-w-full h-auto mb-2 border border-white/10">`;
+        }
 
-    div.innerHTML = `
-        ${avatar}
-        <div class="space-y-1 flex-1 ${align}">
-            <p class="text-[10px] font-bold ${role === 'user' ? 'text-slate-500' : 'text-primary'} uppercase tracking-wider ${margin}">${name}</p>
-            <div class="${bubbleClass} px-4 py-2 rounded-2xl leading-relaxed shadow-sm inline-block text-left max-w-full text-sm">
-                ${imageHTML}
-                <span class="message-content"></span>
+        div.innerHTML = `
+            ${avatar}
+            <div class="space-y-1 flex-1 ${align}">
+                <p class="text-[10px] font-bold ${role === 'user' ? 'text-slate-500' : 'text-primary'} uppercase tracking-wider ${margin}">${name}</p>
+                <div class="${bubbleClass} px-4 py-2 rounded-2xl leading-relaxed shadow-sm inline-block text-left max-w-full text-sm">
+                    ${imageHTML}
+                    <span class="message-content"></span>
+                </div>
             </div>
-        </div>
-    `;
+        `;
 
-    const messageContent = div.querySelector('.message-content');
+        const messageContent = div.querySelector('.message-content');
 
-    chatContainer.appendChild(div);
+        chatContainer.appendChild(div);
 
-    if (animate) {
-        let i = 0;
-        messageContent.textContent = '';
-        const interval = setInterval(() => {
-            messageContent.textContent += content.charAt(i);
+        if (animate) {
+            let i = 0;
+            messageContent.textContent = '';
+            const interval = setInterval(() => {
+                messageContent.textContent += content.charAt(i);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                i++;
+                if (i >= content.length) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 10);
+        } else {
+            messageContent.textContent = content;
             chatContainer.scrollTop = chatContainer.scrollHeight;
-            i++;
-            if (i >= content.length) {
-                clearInterval(interval);
-            }
-        }, 10);
-    } else {
-        messageContent.textContent = content;
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
+            resolve();
+        }
+    });
 }
 
 // --- Features ---
