@@ -377,7 +377,7 @@ function setupChatInput(auth) {
                 document.getElementById('typingIndicator').classList.add('hidden');
 
                 if (res.ok) {
-                    await appendMessage('assistant', data.response, true);
+                    await appendMessage('assistant', data.response, true, null, abortController.signal);
 
                     // If this was a new chat, update ID and refresh list
                     if (!currentConversationId && data.conversationId) {
@@ -420,7 +420,7 @@ function toggleSendButton(isGenerating) {
     }
 }
 
-function appendMessage(role, content, animate = false, image = null) {
+function appendMessage(role, content, animate = false, image = null, signal = null) {
     return new Promise((resolve) => {
         const chatContainer = document.getElementById('chatContainer');
         const welcomeMsg = document.getElementById('welcomeMessage');
@@ -458,12 +458,31 @@ function appendMessage(role, content, animate = false, image = null) {
 
         chatContainer.appendChild(div);
 
+        // Smart Scroll: Scroll only if near bottom
+        const scrollToBottom = () => {
+            const threshold = 100;
+            const position = chatContainer.scrollTop + chatContainer.clientHeight;
+            const height = chatContainer.scrollHeight;
+            if (height - position < threshold) {
+                chatContainer.scrollTop = height;
+            }
+        };
+
+        // Initial scroll for new message
+        scrollToBottom();
+
         if (animate) {
             let i = 0;
             messageContent.textContent = '';
             const interval = setInterval(() => {
+                if (signal && signal.aborted) {
+                    clearInterval(interval);
+                    resolve();
+                    return;
+                }
+
                 messageContent.textContent += content.charAt(i);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
+                scrollToBottom();
                 i++;
                 if (i >= content.length) {
                     clearInterval(interval);
@@ -472,7 +491,7 @@ function appendMessage(role, content, animate = false, image = null) {
             }, 10);
         } else {
             messageContent.textContent = content;
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            scrollToBottom();
             resolve();
         }
     });
